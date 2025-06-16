@@ -82,14 +82,17 @@ async def help_command(client, message):
 • Send private whispers
 • One-time whisper option
 • Message edit detection
-• Message deletion notifications 
+• Message deletion notifications
 • owner - @crush_hu_tera msg if u strugling problem
+
 *Note:* The recipient will be the only one who can read your whisper!
 """
-        await message.reply_text(help_text, parse_mode="Markdown")
+        await message.reply_text(help_text, parse_mode="markdown")
         logger.info(f"Help command received from user {message.from_user.id}")
     except Exception as e:
         logger.error(f"Error in help command: {e}")
+        # Fallback to plain text if markdown fails
+        await message.reply_text(help_text)
 
 async def _whisper(_, inline_query):
     data = inline_query.query
