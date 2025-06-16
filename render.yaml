@@ -12,4 +12,6 @@ services:
       - key: API_ID
         sync: false
       - key: API_HASH
-        sync: false 
+        sync: false
+      - key: PORT
+        value: 8080 

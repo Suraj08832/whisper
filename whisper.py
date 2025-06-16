@@ -8,6 +8,8 @@ import logging
 import sys
 import os
 from dotenv import load_dotenv
+import asyncio
+from aiohttp import web
 
 # Load environment variables
 load_dotenv()
@@ -36,6 +38,15 @@ app = Client(
 whisper_db = {}
 
 switch_btn = InlineKeyboardMarkup([[InlineKeyboardButton("💒 sᴛᴀʀᴛ ᴡʜɪsᴘᴇʀ 💒", switch_inline_query_current_chat="")]])
+
+# Create web application
+web_app = web.Application()
+
+# Add health check endpoint
+async def health_check(request):
+    return web.Response(text="Bot is running!")
+
+web_app.router.add_get("/", health_check)
 
 # Add a startup message handler
 @app.on_message(filters.command("start"))
@@ -175,6 +186,18 @@ async def bot_inline(_, inline_query):
 if __name__ == "__main__":
     try:
         logger.info("Starting the bot...")
+        
+        # Start the web server
+        async def start_web_server():
+            runner = web.AppRunner(web_app)
+            await runner.setup()
+            site = web.TCPSite(runner, '0.0.0.0', int(os.getenv('PORT', 8080)))
+            await site.start()
+            logger.info("Web server started on port 8080")
+        
+        # Run both the bot and web server
+        loop = asyncio.get_event_loop()
+        loop.create_task(start_web_server())
         app.run()
     except KeyboardInterrupt:
         logger.info("Bot stopped by user")
