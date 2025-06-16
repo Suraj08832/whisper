@@ -57,6 +57,40 @@ async def start_command(client, message):
     except Exception as e:
         logger.error(f"Error in start command: {e}")
 
+# Add help command handler
+@app.on_message(filters.command("help"))
+async def help_command(client, message):
+    try:
+        help_text = """
+🤖 *Whisper Bot Help*
+
+*Commands:*
+/start - Start the bot
+/help - Show this help message
+
+*How to use:*
+1. In any chat, type: `@lackbbot username message`
+2. Select either:
+   - 💒 Regular Whisper
+   - 🔩 One-time Whisper
+
+*Examples:*
+• `@lackbbot @username Hello!`
+• `@lackbbot 123456789 Hi there!`
+
+*Features:*
+• Send private whispers
+• One-time whisper option
+• Message edit detection
+• Message deletion notifications 
+• owner - @crush_hu_tera msg if u strugling problem
+*Note:* The recipient will be the only one who can read your whisper!
+"""
+        await message.reply_text(help_text, parse_mode="Markdown")
+        logger.info(f"Help command received from user {message.from_user.id}")
+    except Exception as e:
+        logger.error(f"Error in help command: {e}")
+
 async def _whisper(_, inline_query):
     data = inline_query.query
     results = []
